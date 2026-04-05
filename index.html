@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Z Chat Super App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg-orb orb-a"></div>
+    <div class="bg-orb orb-b"></div>
+    <div class="bg-grid"></div>
+
+    <div id="toast-root" class="toast-root"></div>
+
+    <section id="auth-view" class="auth-shell">
+        <div class="auth-panel glass-card">
+            <div class="brand-block">
+                <h1>Z Chat</h1>
+                <p class="hero-copy">Z Chat - The Future of Communication.</p>
+            </div>
+            <div class="auth-toggle">
+                <button type="button" id="show-signin-btn" class="active">Sign In</button>
+                <button type="button" id="show-signup-btn">Create Account</button>
+            </div>
+            <form id="signin-form" class="auth-form">
+                <label>
+                    <span>Email</span>
+                    <input id="signin-email" type="email" autocomplete="email" placeholder="pilot@zchat.app" required>
+                </label>
+                <label>
+                    <span>Password</span>
+                    <input id="signin-password" type="password" autocomplete="current-password" placeholder="Enter password" required>
+                </label>
+                <button type="submit" class="primary-btn">Sign In</button>
+                <button type="button" id="google-signin-btn" class="secondary-btn">Continue with Google</button>
+                <button type="button" id="forgot-password-btn" class="ghost-btn">Forgot password?</button>
+            </form>
+            <form id="signup-form" class="auth-form hidden">
+                <label>
+                    <span>Username</span>
+                    <input id="signup-username" type="text" minlength="3" maxlength="20" placeholder="unique_username" required>
+                </label>
+                <label>
+                    <span>Email</span>
+                    <input id="signup-email" type="email" autocomplete="email" placeholder="pilot@zchat.app" required>
+                </label>
+                <label>
+                    <span>Password</span>
+                    <input id="signup-password" type="password" autocomplete="new-password" minlength="6" placeholder="At least 6 characters" required>
+                </label>
+                <label>
+                    <span>Bio / Status</span>
+                    <textarea id="signup-bio" rows="3" placeholder="Tell your squad who you are"></textarea>
+                </label>
+                <button type="submit" class="primary-btn">Create Account</button>
+                <button type="button" id="google-signup-btn" class="secondary-btn">Sign Up with Google</button>
+            </form>
+            <p id="auth-error" class="form-error"></p>
+        </div>
+    </section>
+
+    <section id="app-view" class="app-shell hidden">
+        <aside id="sidebar" class="sidebar glass-card">
+            <div class="sidebar-top">
+                <div class="profile-card" id="profile-card">
+                    <div class="avatar-stack">
+                        <img id="profile-avatar" class="avatar-image" alt="Profile avatar">
+                        <span id="presence-dot" class="presence-dot"></span>
+                    </div>
+                    <div class="profile-meta">
+                        <strong id="profile-username">Loading</strong>
+                        <span id="profile-status">Connecting...</span>
+                    </div>
+                    <button type="button" id="mobile-close-sidebar" class="icon-btn mobile-only" aria-label="Close menu">x</button>
+                </div>
+
+                <button type="button" id="mobile-open-sidebar" class="icon-btn mobile-open" aria-label="Open menu">Menu</button>
+
+                <div class="nav-list">
+                    <button class="nav-btn active" data-section="chats">Chats</button>
+                    <button class="nav-btn" data-section="friends">Friends</button>
+                    <button class="nav-btn" data-section="gaming">Gaming</button>
+                    <button class="nav-btn" data-section="study">Study</button>
+                    <button class="nav-btn" data-section="settings">Settings</button>
+                </div>
+
+                <label class="search-box">
+                    <input id="global-search-input" type="search" placeholder="Search users, chats, tournaments, notes">
+                </label>
+            </div>
+
+            <div class="sidebar-body custom-scroll">
+                <section id="sidebar-chats" class="sidebar-section">
+                    <div class="section-head">
+                        <h3>Conversations</h3>
+                        <div class="section-actions">
+                            <button id="new-direct-chat-btn" class="tiny-btn">DM</button>
+                            <button id="new-group-btn" class="tiny-btn">Group</button>
+                            <button id="new-server-btn" class="tiny-btn">Server</button>
+                        </div>
+                    </div>
+                    <div id="conversation-list" class="list-stack"></div>
+                    <div class="section-head">
+                        <h3>Servers & Channels</h3>
+                    </div>
+                    <div id="server-list" class="list-stack"></div>
+                </section>
+
+                <section id="sidebar-friends" class="sidebar-section hidden">
+                    <div class="section-head">
+                        <h3>Friend System</h3>
+                        <button id="open-user-search-btn" class="tiny-btn">Search</button>
+                    </div>
+                    <div id="friend-request-list" class="list-stack"></div>
+                    <div class="section-head">
+                        <h3>Friends</h3>
+                    </div>
+                    <div id="friend-list" class="list-stack"></div>
+                </section>
+
+                <section id="sidebar-gaming" class="sidebar-section hidden">
+                    <div class="section-head">
+                        <h3>Game Rooms</h3>
+                        <button id="create-room-btn" class="tiny-btn">Create</button>
+                    </div>
+                    <div id="game-room-list" class="list-stack"></div>
+                    <div class="section-head">
+                        <h3>Tournaments</h3>
+                        <button id="create-tournament-btn" class="tiny-btn">Host</button>
+                    </div>
+                    <div id="tournament-list" class="list-stack"></div>
+                </section>
+
+                <section id="sidebar-study" class="sidebar-section hidden">
+                    <div class="section-head">
+                        <h3>Study Groups</h3>
+                        <button id="create-study-group-btn" class="tiny-btn">New</button>
+                    </div>
+                    <div id="study-group-list" class="list-stack"></div>
+                    <div class="section-head">
+                        <h3>Subjects</h3>
+                    </div>
+                    <div id="subject-channel-list" class="list-stack"></div>
+                </section>
+
+                <section id="sidebar-settings" class="sidebar-section hidden">
+                    <div class="settings-list">
+                        <button id="edit-profile-btn" class="setting-row">Edit profile</button>
+                        <button id="premium-btn" class="setting-row">Premium & UPI</button>
+                        <button id="ai-panel-btn" class="setting-row">AI Tutor & Scanner</button>
+                        <button id="logout-btn" class="setting-row danger">Logout</button>
+                    </div>
+                </section>
+            </div>
+        </aside>
+
+        <main class="workspace">
+            <header class="workspace-header glass-card">
+                <div class="workspace-title">
+                    <div id="workspace-avatar" class="workspace-avatar">Z</div>
+                    <div>
+                        <h2 id="workspace-name">Welcome to Z Chat</h2>
+                        <p id="workspace-subtitle">Realtime messaging, gaming squads, study spaces, AI, and WebRTC calls</p>
+                    </div>
+                </div>
+                <div class="workspace-actions">
+                    <button id="voice-call-btn" class="icon-btn">Voice</button>
+                    <button id="video-call-btn" class="icon-btn">Video</button>
+                    <button id="rename-group-btn" class="icon-btn hidden">Rename</button>
+                    <button id="open-profile-btn" class="icon-btn">Profile</button>
+                    <button id="theme-btn" class="icon-btn">Theme</button>
+                    <button id="notifications-btn" class="icon-btn">Alerts</button>
+                </div>
+            </header>
+
+            <section class="workspace-grid">
+                <div class="stream-panel glass-card">
+                    <div id="smart-overview" class="smart-overview"></div>
+                    <div id="message-feed" class="message-feed custom-scroll"></div>
+                    <button id="load-more-btn" class="ghost-btn hidden">Load older messages</button>
+                    <div id="typing-indicator" class="typing-indicator hidden"></div>
+                    <div id="reply-banner" class="reply-banner hidden"></div>
+                    <div id="upload-progress" class="upload-progress hidden"></div>
+                    <div id="media-preview-strip" class="media-preview-strip hidden"></div>
+                    <div class="composer-row">
+                        <button id="emoji-btn" class="icon-btn">Emoji</button>
+                        <button id="gif-btn" class="icon-btn">GIF</button>
+                        <button id="media-btn" class="icon-btn">Media</button>
+                        <button id="scanner-btn" class="icon-btn">Scan</button>
+                        <label class="composer-input">
+                            <textarea id="message-input" rows="1" placeholder="Type a message, ask AI, share notes, send a squad invite"></textarea>
+                        </label>
+                        <button id="send-message-btn" class="primary-btn slim">Send</button>
+                    </div>
+                    <input id="media-input" type="file" accept="image/*,.pdf" multiple hidden>
+                </div>
+
+                <aside class="side-panel glass-card custom-scroll">
+                    <section class="panel-block">
+                        <div class="panel-head">
+                            <h3>Live Status</h3>
+                            <span id="premium-badge" class="badge hidden">PREMIUM</span>
+                        </div>
+                        <div id="live-metrics" class="metric-grid"></div>
+                    </section>
+                    <section class="panel-block">
+                        <div class="panel-head">
+                            <h3>Notifications</h3>
+                            <button id="clear-notifications-btn" class="tiny-btn">Clear</button>
+                        </div>
+                        <div id="notification-list" class="list-stack"></div>
+                    </section>
+                    <section class="panel-block">
+                        <div class="panel-head">
+                            <h3>Quick Actions</h3>
+                        </div>
+                        <div class="quick-grid">
+                            <button id="open-call-room-btn" class="quick-card">Gaming voice room</button>
+                            <button id="join-team-finder-btn" class="quick-card">Looking for squad</button>
+                            <button id="open-tutor-btn" class="quick-card">AI Tutor</button>
+                            <button id="open-study-notes-btn" class="quick-card">Share notes</button>
+                        </div>
+                    </section>
+                </aside>
+            </section>
+        </main>
+    </section>
+
+    <section id="drawer-overlay" class="drawer-overlay hidden"></section>
+
+    <dialog id="profile-modal" class="app-modal">
+        <form method="dialog" class="modal-card glass-card">
+            <div class="modal-head">
+                <h3>Profile</h3>
+                <button class="icon-btn" value="cancel">x</button>
+            </div>
+            <div class="form-grid">
+                <label>
+                    <span>Username</span>
+                    <input id="profile-username-input" type="text" minlength="3" maxlength="20">
+                </label>
+                <label>
+                    <span>Bio / Status</span>
+                    <textarea id="profile-bio-input" rows="3"></textarea>
+                </label>
+                <label>
+                    <span>Avatar</span>
+                    <input id="profile-avatar-input" type="file" accept="image/*">
+                </label>
+                <label>
+                    <span>Gaming UID</span>
+                    <input id="gaming-uid-input" type="text" placeholder="FF / BGMI UID">
+                </label>
+                <label>
+                    <span>Rank</span>
+                    <input id="gaming-rank-input" type="text" placeholder="Ace Dominator / Heroic">
+                </label>
+                <label>
+                    <span>Stats</span>
+                    <textarea id="gaming-stats-input" rows="3" placeholder="KD, wins, role, favorite loadout"></textarea>
+                </label>
+            </div>
+            <div class="modal-actions">
+                <button id="save-profile-btn" type="button" class="primary-btn">Save Profile</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="user-search-modal" class="app-modal">
+        <form method="dialog" class="modal-card glass-card">
+            <div class="modal-head">
+                <h3>Find Users</h3>
+                <button class="icon-btn" value="cancel">x</button>
+            </div>
+            <label>
+                <span>Username search</span>
+                <input id="user-search-input" type="search" placeholder="Search exact or partial username">
+            </label>
+            <div id="user-search-results" class="list-stack"></div>
+        </form>
+    </dialog>
+
+    <dialog id="creator-modal" class="app-modal">
+        <form method="dialog" class="modal-card glass-card">
+            <div class="modal-head">
+                <h3 id="creator-title">Create</h3>
+                <button class="icon-btn" value="cancel">x</button>
+            </div>
+            <div id="creator-fields" class="form-grid"></div>
+            <div class="modal-actions">
+                <button id="creator-submit-btn" type="button" class="primary-btn">Create</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="premium-modal" class="app-modal">
+        <form method="dialog" class="modal-card glass-card">
+            <div class="modal-head">
+                <h3>Premium</h3>
+                <button class="icon-btn" value="cancel">x</button>
+            </div>
+            <div class="premium-hero">
+                <div class="premium-copy">
+                    <strong>Upgrade to Premium</strong>
+                    <span>Unlock paid features using a UPI QR payment flow.</span>
+                </div>
+            </div>
+            <div class="plan-grid">
+                <button type="button" class="plan-card" data-plan="49" data-name="Starter Pro">
+                    <strong>Starter Pro</strong>
+                    <span>₹49 / month</span>
+                    <small>Unlimited images, basic premium themes, groups, and full emoji access</small>
+                </button>
+                <button type="button" class="plan-card" data-plan="99" data-name="Super Elite">
+                    <strong>Super Elite</strong>
+                    <span>₹99 / month</span>
+                    <small>Calls, HD media, AI unlimited, gaming rooms, premium badge, and priority features</small>
+                </button>
+            </div>
+            <div id="payment-preview" class="payment-preview hidden"></div>
+            <div class="modal-actions">
+                <button id="mark-payment-btn" type="button" class="primary-btn hidden">I Have Paid</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="ai-modal" class="app-modal">
+        <form method="dialog" class="modal-card glass-card wide">
+            <div class="modal-head">
+                <h3>AI Tutor & Z Scanner</h3>
+                <button class="icon-btn" value="cancel">x</button>
+            </div>
+            <div class="ai-layout">
+                <div class="form-grid">
+                    <label>
+                        <span>Mode</span>
+                        <select id="ai-mode-select">
+                            <option value="explain">Explain concept</option>
+                            <option value="solve">Solve math step-by-step</option>
+                            <option value="summarize">Summarize notes</option>
+                            <option value="quiz">Generate quiz</option>
+                            <option value="scan">Fake news scan</option>
+                        </select>
+                    </label>
+                    <label>
+                        <span>Prompt / Text</span>
+                        <textarea id="ai-input" rows="8" placeholder="Paste a topic, note, math problem, or suspicious message"></textarea>
+                    </label>
+                    <label>
+                        <span>OpenAI API Key</span>
+                        <input id="openai-key-input" type="password" placeholder="Stored in localStorage for direct browser requests">
+                    </label>
+                    <button id="run-ai-btn" type="button" class="primary-btn">Run AI</button>
+                </div>
+                <div id="ai-output" class="ai-output custom-scroll"></div>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="theme-modal" class="app-modal">
+        <form method="dialog" class="modal-card glass-card">
+            <div class="modal-head">
+                <h3>Theme System</h3>
+                <button class="icon-btn" value="cancel">x</button>
+            </div>
+            <div class="theme-grid">
+                <button type="button" class="theme-card" data-theme="cyber-blue">Cyber Blue</button>
+                <button type="button" class="theme-card" data-theme="matrix">Matrix</button>
+                <button type="button" class="theme-card" data-theme="cyber-pink">Cyber Pink</button>
+                <button type="button" class="theme-card" data-theme="gaming-red">Gaming Red</button>
+                <button type="button" class="theme-card" data-theme="study-blue">Study Blue</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="emoji-modal" class="app-modal">
+        <form method="dialog" class="modal-card glass-card wide">
+            <div class="modal-head">
+                <h3>Emoji Picker</h3>
+                <button class="icon-btn" value="cancel">x</button>
+            </div>
+            <div id="emoji-grid" class="emoji-grid custom-scroll"></div>
+        </form>
+    </dialog>
+
+    <dialog id="gif-modal" class="app-modal">
+        <form method="dialog" class="modal-card glass-card">
+            <div class="modal-head">
+                <h3>GIF Support</h3>
+                <button class="icon-btn" value="cancel">x</button>
+            </div>
+            <label>
+                <span>GIF URL</span>
+                <input id="gif-url-input" type="url" placeholder="Paste a GIF URL">
+            </label>
+            <div class="modal-actions">
+                <button id="send-gif-btn" type="button" class="primary-btn">Send GIF</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="call-modal" class="app-modal">
+        <form method="dialog" class="modal-card glass-card">
+            <div class="modal-head">
+                <h3 id="call-title">Call</h3>
+                <button id="close-call-btn" class="icon-btn" value="cancel">x</button>
+            </div>
+            <div class="call-shell">
+                <div class="call-meta">
+                    <strong id="call-peer-name">Connecting...</strong>
+                    <span id="call-status-text">Waiting for answer</span>
+                    <span id="call-timer">00:00</span>
+                </div>
+                <div class="video-grid">
+                    <video id="local-video" autoplay playsinline muted></video>
+                    <video id="remote-video" autoplay playsinline></video>
+                </div>
+                <div class="call-actions">
+                    <button id="accept-call-btn" type="button" class="primary-btn hidden">Accept</button>
+                    <button id="reject-call-btn" type="button" class="secondary-btn hidden">Reject</button>
+                    <button id="toggle-mic-btn" type="button" class="icon-btn">Mic</button>
+                    <button id="toggle-camera-btn" type="button" class="icon-btn">Cam</button>
+                    <button id="end-call-btn" type="button" class="danger-btn">End</button>
+                </div>
+            </div>
+        </form>
+    </dialog>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
